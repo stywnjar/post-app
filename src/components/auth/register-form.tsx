@@ -94,9 +94,9 @@ export function RegisterForm() {
           <FieldError error={errors.password} />
         </div>
         <button className="btn btn-md">
-          {isLoading &&
-            <span className="loading loading-spinner loading-sm" />
-          } Login</button>
+          {isLoading && <span className="loading loading-spinner loading-sm" />}{" "}
+          Register
+        </button>
       </fieldset>
     </form>
   );
