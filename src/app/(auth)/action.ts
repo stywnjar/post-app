@@ -1,7 +1,12 @@
 "use server";
 
 import { lucia } from "@/libs/lucia";
-import { registerType, registerSchema } from "@/schema/auth";
+import {
+  registerType,
+  registerSchema,
+  loginType,
+  loginSchema,
+} from "@/schema/auth";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -47,7 +52,37 @@ export async function registerAction(data: registerType) {
   cookies().set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes,
+    sessionCookie.attributes
   );
   return redirect("/");
+}
+
+export async function loginAction(data: loginType) {
+  const validatedData = loginSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    throw Error("invalid fields!");
+  }
+
+  const { email, password } = validatedData.data;
+
+  const userExist = await prisma.user.findFirst({ where: { email } });
+  if (!userExist) {
+    throw Error("Email unregistered!");
+  }
+
+  const isCorrect = await bcrypt.compare(password, userExist.password);
+  if (!isCorrect) {
+    throw Error("Wrong password!");
+  }
+
+  const session = await lucia.createSession(userExist.id, {});
+  const sessionCookie = lucia.createSessionCookie(session.id);
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
+
+  redirect("/");
 }
