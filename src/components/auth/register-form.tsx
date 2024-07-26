@@ -3,6 +3,8 @@ import { registerType, registerSchema } from "@/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FieldError } from "@/components/auth";
+import { useTransition } from "react";
+import { registerAction } from "@/app/(auth)/action";
 
 export function RegisterForm() {
   const {
@@ -12,14 +14,22 @@ export function RegisterForm() {
     reset,
   } = useForm<registerType>({ resolver: zodResolver(registerSchema) });
 
+  const [isLoading, setTransition] = useTransition();
+
   async function submitHandler(data: registerType) {
-    console.log(data);
-    reset();
+    setTransition(async () => {
+      try {
+        await registerAction(data);
+        reset();
+      } catch (error) {
+        console.log(error);
+      }
+    });
   }
 
   return (
     <form className="py-5" onSubmit={handleSubmit(submitHandler)}>
-      <fieldset className="flex flex-col gap-3">
+      <fieldset disabled={isLoading} className="flex flex-col gap-3">
         <div>
           <label className="input input-bordered flex items-center gap-2">
             <svg
@@ -83,7 +93,10 @@ export function RegisterForm() {
 
           <FieldError error={errors.password} />
         </div>
-        <button className="btn btn-md">Login</button>
+        <button className="btn btn-md">
+          {isLoading &&
+            <span className="loading loading-spinner loading-sm" />
+          } Login</button>
       </fieldset>
     </form>
   );

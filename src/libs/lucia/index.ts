@@ -1,8 +1,9 @@
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { Lucia, Session, User } from "lucia";
+import { Lucia } from "lucia";
+import type { Session, User } from "lucia";
 import prisma from "../prisma";
 
-const adapter = new PrismaAdapter(prisma.user, prisma.session);
+const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -65,7 +66,7 @@ export const validateRequest = cache(
           sessionCookie.attributes,
         );
       }
-    } catch { }
+    } catch {}
     return result;
   },
 );
