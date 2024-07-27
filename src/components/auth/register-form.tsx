@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { FieldError } from "@/components/auth";
 import { useTransition } from "react";
 import { registerAction } from "@/app/(auth)/action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
   const {
@@ -15,14 +17,19 @@ export function RegisterForm() {
   } = useForm<registerType>({ resolver: zodResolver(registerSchema) });
 
   const [isLoading, setTransition] = useTransition();
+  const router = useRouter();
 
   async function submitHandler(data: registerType) {
     setTransition(async () => {
       try {
-        await registerAction(data);
+        const register = await registerAction(data);
+        if (register.error) throw Error(register.message);
+        toast.success(register.message);
+        router.push("/");
+
         reset();
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error.message);
       }
     });
   }

@@ -28,16 +28,16 @@ export async function registerAction(data: registerType) {
   const emailExist = await prisma.user.findFirst({ where: { email } });
 
   if (usernameExist) {
-    throw Error("username already exist");
-    // return {
-    //   error: "Username already exist!",
-    // };
+    return {
+      error: true,
+      message: "Username already exist!",
+    };
   }
   if (emailExist) {
-    throw Error("email already exist");
-    // return {
-    //   error: "Email already registered!",
-    // };
+    return {
+      error: true,
+      message: "Email already registered!",
+    };
   }
 
   const password_hash = await bcrypt.hash(password, 10);
@@ -54,7 +54,10 @@ export async function registerAction(data: registerType) {
     sessionCookie.value,
     sessionCookie.attributes
   );
-  return redirect("/");
+  return {
+    error: false,
+    message: "Registered successfully",
+  };
 }
 
 export async function loginAction(data: loginType) {
@@ -68,12 +71,18 @@ export async function loginAction(data: loginType) {
 
   const userExist = await prisma.user.findFirst({ where: { email } });
   if (!userExist) {
-    throw Error("Email unregistered!");
+    return {
+      error: true,
+      message: "Email unregistered!",
+    };
   }
 
   const isCorrect = await bcrypt.compare(password, userExist.password);
   if (!isCorrect) {
-    throw Error("Wrong password!");
+    return {
+      error: true,
+      message: "Wrong password!",
+    };
   }
 
   const session = await lucia.createSession(userExist.id, {});
@@ -84,5 +93,8 @@ export async function loginAction(data: loginType) {
     sessionCookie.attributes
   );
 
-  redirect("/");
+  return {
+    error: false,
+    message: "Welcome back!",
+  };
 }

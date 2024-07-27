@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { FieldError } from "@/components/auth";
 import { useTransition } from "react";
 import { loginAction } from "@/app/(auth)/action";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function LoginForm() {
   const {
@@ -15,15 +17,19 @@ export function LoginForm() {
   } = useForm<loginType>({ resolver: zodResolver(loginSchema) });
 
   const [isLoading, setTransition] = useTransition();
+  const router = useRouter();
 
   async function submitHandler(data: loginType) {
     setTransition(async () => {
       try {
-        await loginAction(data);
+        const login = await loginAction(data);
+        if (login.error) throw Error(login.message);
+        toast.success(login.message);
+        router.push("/");
 
         reset();
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error.message);
       }
     });
   }
