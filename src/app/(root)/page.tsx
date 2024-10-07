@@ -8,8 +8,7 @@ export default async function HomePage() {
   }
   return (
     <main className="flex justify-between">
-      <h1>Hello</h1>
-      <h1>Hello world!</h1>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
     </main>
   );
 }
