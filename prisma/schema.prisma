@@ -14,15 +14,15 @@ datasource db {
 }
 
 model User {
-  id         String    @id
-  name       String
-  username   String    @unique
-  email      String    @unique
-  password   String
-  bio        String
-  avatar_url String
-  Session    Session[]
-  posts      Post[]
+  id        String    @id
+  name      String
+  username  String    @unique
+  email     String    @unique
+  password  String
+  bio       String
+  avatarUrl String
+  Session   Session[]
+  posts     Post[]
 }
 
 model Session {

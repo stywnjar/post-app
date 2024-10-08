@@ -21,7 +21,7 @@ export async function registerAction(data: registerType) {
     };
   }
 
-  const { username, email, password } = validatedData.data;
+  const { name, username, email, password } = validatedData.data;
 
   const usernameExist = await prisma.user.findFirst({ where: { username } });
   const emailExist = await prisma.user.findFirst({ where: { email } });
@@ -43,7 +43,15 @@ export async function registerAction(data: registerType) {
   const userId = generateIdFromEntropySize(10);
 
   await prisma.user.create({
-    data: { id: userId, username, email, password: password_hash },
+    data: {
+      id: userId,
+      name,
+      username,
+      email,
+      bio: "no bio yet",
+      avatarUrl: `https://ui-avatars.com/api/?name=${username}`,
+      password: password_hash,
+    },
   });
 
   const session = await lucia.createSession(userId, {});
