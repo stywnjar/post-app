@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FieldError } from "@/components/auth";
 import { useTransition } from "react";
-import { loginAction } from "@/app/(auth)/action";
+import { loginAction } from "@/action/auth.action";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
