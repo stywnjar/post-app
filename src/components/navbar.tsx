@@ -1,3 +1,4 @@
+import { LogoutButton } from "@/components/auth";
 import { NavbarLinks } from "./navbar-links";
 
 export function Navbar() {
@@ -9,7 +10,7 @@ export function Navbar() {
         </section>
         <NavbarLinks />
         <section className="w-3/12 flex justify-end">
-          <button className="btn-error btn btn-sm">Log out</button>
+          <LogoutButton />
         </section>
       </nav>
     </header>
