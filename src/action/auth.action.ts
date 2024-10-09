@@ -1,6 +1,6 @@
 "use server";
 
-import { lucia } from "@/libs/lucia";
+import { lucia, validateRequest } from "@/libs/lucia";
 import {
   registerType,
   registerSchema,
@@ -9,6 +9,7 @@ import {
 } from "@/schema/auth";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 import prisma from "@/libs/prisma";
 
@@ -104,4 +105,18 @@ export async function loginAction(data: loginType) {
     error: false,
     message: "Welcome back!",
   };
+}
+
+export async function getUserAction() {
+  const { user } = await validateRequest();
+  if (!user) {
+    redirect("/login");
+  }
+
+  const currentUser = await prisma.user.findFirst({ where: { id: user.id } });
+  if (!currentUser) {
+    redirect("/login");
+  }
+
+  return currentUser;
 }
