@@ -1,4 +1,5 @@
 import { getUserAction } from "@/action/auth.action";
+import { PostForm } from "@/components/post/post-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default async function Createpage() {
 
   return (
     <main>
-      <section className="flex items-center gap-2">
+      <section className="flex items-center gap-2 mb-5">
         <div className="w-10 h-10 rounded-full">
           <img
             src={avatarUrl}
@@ -23,9 +24,7 @@ export default async function Createpage() {
           <p className="text-sm text-white/65">{username}</p>
         </div>
       </section>
-      <form>
-        <textarea className="w-full h-40 resize-none" />
-      </form>
+      <PostForm />
     </main>
   );
 }
